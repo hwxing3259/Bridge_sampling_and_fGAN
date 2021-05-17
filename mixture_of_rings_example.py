@@ -184,7 +184,7 @@ print(mixring_bf.fitted_r)
 print(mixring_bf.estimated_RMSE)
 
 # plot the first two dimensions of the original and transformed samples
-new_samples = aaa.myGenerator.inverse(torch.tensor(estimate_q1, device=device, dtype=torch.float))[0]
+new_samples = mixring_bf.myGenerator.inverse(torch.tensor(estimate_q1, device=device, dtype=torch.float))[0]
 new_samples = new_samples.detach().cpu().numpy()
 plt.scatter(estimate_q1[:, 0], estimate_q1[:, 1], label=r'$q_1$', alpha=0.5, s=8.)
 plt.scatter(new_samples[:, 0], new_samples[:, 1], label=r'$q^{(\phi)}_1$', alpha=0.5, s=8.)
