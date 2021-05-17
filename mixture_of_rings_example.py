@@ -163,22 +163,25 @@ logdensq2 = logdensq2.to(device)
 
 # run Algorithm 2
 start = time.time()
-aaa = bridge_fGAN.fGANBridge(sample_q1, logdensq1, sample_q2, logdensq2,
-                             estimate_q1, estimate_q2, fdiv="harmonic")
+mixring_bf = bridge_fGAN.fGANBridge(sample_q1, logdensq1, sample_q2, logdensq2,
+                                    estimate_q1, estimate_q2, fdiv="harmonic")
 
-bbb = aaa.fit(12, 40, 8, epoch=25, lr_discriminator=0.2,
-              lr_generator=1e-3, beta_for_kl1=0.05, beta_for_kl2=0.05, batch_norm=False)
+estimated_bf = mixring_bf.fit(12, 40, 8, epoch=25, lr_discriminator=0.2,
+                              lr_generator=1e-3, beta_for_kl1=0.05, beta_for_kl2=0.05, batch_norm=False)
 end = time.time()
 
-print("estimated log r = {}".format(bbb))
+print("estimated log r = {}".format(estimated_bf))
 print("took {} s".format(end-start))
 print("truth is {}".format(mix_ring1.log_nc()-mix_ring2.log_nc()))
 
 # generate plots, left: classification lkd as a function of r right: the f-GAN objective as a function of r
-aaa.generate_plots(mix_ring1.log_nc()-mix_ring2.log_nc(), 3)
+mixring_bf.generate_plots(mix_ring1.log_nc()-mix_ring2.log_nc(), 3)
+
+# getting the estimated ratio of NCs
+print(mixring_bf.fitted_r)
 
 # getting estimate RMSE of r or MSE of log r
-print(aaa.estimated_RMSE)
+print(mixring_bf.estimated_RMSE)
 
 # plot the first two dimensions of the original and transformed samples
 new_samples = aaa.myGenerator.inverse(torch.tensor(estimate_q1, device=device, dtype=torch.float))[0]
